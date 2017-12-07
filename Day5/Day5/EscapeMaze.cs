@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Day5
 {
     [TestFixture]
-    public class UnitTest1
+    public class EscapeMaze
     {
         #region INPUT
         private readonly int[] _input = 
@@ -103,11 +103,10 @@ namespace Day5
         [Test]
         public void Escape_Maze()
         {
-            long totalActions = _input.Length;
             int position = 0;
             int steps = 0;
 
-            while (position < totalActions)
+            while (position < _input.Length)
             {
                 if (_input[position] == 0)
                 {
@@ -120,7 +119,34 @@ namespace Day5
                 int moveAmount = _input[position];
                 _input[position] += 1;
                 steps += 1;
-                position += _input[position] - 1;
+                position += moveAmount;
+            }
+
+            Console.WriteLine($"Steps: {steps}");
+        }
+
+
+        [Test]
+        public void Escape_Maze_Three_Or_More()
+        {
+            int position = 0;
+            int steps = 0;
+
+            while (position < _input.Length)
+            {
+                if (_input[position] == 0)
+                {
+                    _input[position] = 2;
+                    steps += 2;
+                    position += 1;
+                    
+                    continue;
+                }
+
+                int moveAmount = _input[position];
+                _input[position] += moveAmount >= 3 ? -1 : 1;
+                steps += 1;
+                position += moveAmount;
             }
 
             Console.WriteLine($"Steps: {steps}");
