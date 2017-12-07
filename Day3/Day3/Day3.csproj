@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="StepCount.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SumOfNeighbors.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
