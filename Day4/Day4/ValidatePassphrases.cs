@@ -530,6 +530,13 @@ inc mpys mzqmcwx vryz ibqrzc pmsy fat rojpxwy rcbqzi gjef";
 @"aa bb cc dd ee
 aa bb cc dd aa
 aa bb cc dd aaa";
+        
+        private readonly string _sample2 =
+@"abcde fghij
+abcde xyz ecdab
+a ab abc abd abf abj
+iiii oiii ooii oooi oooo
+oiii ioii iioi iiio";
 
         [Test]
         public void Count_Valid_Passphrases()
@@ -543,9 +550,30 @@ aa bb cc dd aaa";
                         .Select(w => w?.Trim())
                         .Where(w => !string.IsNullOrEmpty(w))
                         .ToList();
-                    
-                    return curr + (words.Distinct().Count() == words.Count() ? 1 : 0);
+
+                    return words.Distinct().Count() == words.Count() ?
+                        ++curr : curr;
                 })
+            );
+        }
+        
+        [Test]
+        public void Count_Valid_Anagrams()
+        {
+            Console.WriteLine("Count: " +
+                _input.Split('\n')
+                    .Where(l => !string.IsNullOrWhiteSpace(l))
+                    .Aggregate(0, (curr, line) =>
+                    {
+                        IEnumerable<string> words = line.Split(' ')
+                            .Select(w => w?.Trim())
+                            .Where(w => !string.IsNullOrEmpty(w))
+                            .Select(w => new string(w.OrderBy(c => c).ToArray()))
+                            .ToList();
+
+                        return words.Distinct().Count() == words.Count() ?
+                            ++curr : curr;
+                    })
             );
         }
     }
