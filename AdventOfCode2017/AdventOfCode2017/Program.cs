@@ -13,30 +13,46 @@ namespace AdventOfCode2017
 
             while (true)
             {
-                Console.Write("> ");
-                switch (Console.ReadLine().Replace(">", "").Trim().ToLower())
+                try
                 {
-                    case "1":
-                        DeterminePart(new Day1());
-                        break;
-                    case "2":
-                        DeterminePart(new Day2());
-                        break;
-                    case "3":
-                        DeterminePart(new Day3());
-                        break;
-                    case "4":
-                        DeterminePart(new Day4());
-                        break;
-                    case "5":
-                        DeterminePart(new Day5());
-                        break;
-                    case "6":
-                        DeterminePart(new Day6());
-                        break;
-                    default:
-                        Console.WriteLine("Unknown command");
-                        break;
+                    Console.Write("> ");
+                    switch (Console.ReadLine().Replace(">", "").Trim().ToLower())
+                    {
+                        case "1":
+                            DeterminePart(new Day1());
+                            break;
+                        case "2":
+                            DeterminePart(new Day2());
+                            break;
+                        case "3":
+                            DeterminePart(new Day3());
+                            break;
+                        case "4":
+                            DeterminePart(new Day4());
+                            break;
+                        case "5":
+                            DeterminePart(new Day5());
+                            break;
+                        case "6":
+                            DeterminePart(new Day6());
+                            break;
+                        case "7":
+                            DeterminePart(new Day7());
+                            break;
+                        case "exit":
+                            return;
+                        default:
+                            Console.WriteLine("Unkown Day");
+                            break;
+                    }
+                }
+                catch (NotImplementedException)
+                {
+                    Console.WriteLine("Not Implemented");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
                 }
 
                 Console.WriteLine();

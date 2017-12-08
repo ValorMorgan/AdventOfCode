@@ -16,13 +16,70 @@ namespace AdventOfCode2017.Days
             0, 2, 7, 0
         };
 
+        private static decimal CreateRecord(int[] banks) =>
+            decimal.Parse(string.Join("", banks));
+
         public void Part1()
         {
             Console.WriteLine("Memory Reallocation P.1");
 
-            int[] banks = _sample;
+            int[] banks = _input;
 
-            IList<int[]> seen = new List<int[]> { banks };
+            IList<decimal> seen = new List<decimal>();
+
+            do
+            {
+                seen.Add(CreateRecord(banks));
+
+                int index = Array.IndexOf(banks, banks.Max());
+                int bank = banks[index];
+                banks[index] = 0;
+
+                while (bank > 0)
+                {
+                    index = index == banks.Length - 1 ?
+                        0 : index + 1;
+
+                    banks[index] += 1;
+                    bank -= 1;
+                }
+            }
+            while (!seen.Contains(CreateRecord(banks)));
+
+            Console.WriteLine($"Redistribution Cycles: {seen.Count}");
+        }
+
+        public void Part2()
+        {
+            Console.WriteLine("Memory Reallocation P.2");
+
+            int[] banks = _input;
+
+            IList<decimal> seen = new List<decimal>();
+            decimal banksRecord = CreateRecord(banks);
+
+            do
+            {
+                seen.Add(banksRecord);
+
+                int index = Array.IndexOf(banks, banks.Max());
+                int bank = banks[index];
+                banks[index] = 0;
+
+                while (bank > 0)
+                {
+                    index = index == banks.Length - 1 ?
+                        0 : index + 1;
+
+                    banks[index] += 1;
+                    bank -= 1;
+                }
+
+                banksRecord = CreateRecord(banks);
+            }
+            while (!seen.Contains(banksRecord));
+
+            int cycles = 0;
 
             do
             {
@@ -39,19 +96,11 @@ namespace AdventOfCode2017.Days
                     bank -= 1;
                 }
 
-                seen.Add(banks);
+                cycles += 1;
             }
-            while (!seen.Contains(banks));
+            while (banksRecord != CreateRecord(banks));
 
-            Console.WriteLine($"Redistribution Cycles: {seen.Count - 1}");
-        }
-
-        public void Part2()
-        {
-            Console.WriteLine("Memory Reallocation P.2");
-
-            // TODO: Day6 Part2
-            Console.WriteLine("WIP");
+            Console.WriteLine($"Redistribution Cycles: {cycles}");
         }
     }
 }

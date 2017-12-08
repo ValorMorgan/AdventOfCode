@@ -57,10 +57,7 @@ namespace AdventOfCode2017.Days
 
         public void Part2()
         {
-            Console.WriteLine("Spiral Memory P.2");
-
-            // TODO: Day3 Part2
-            Console.WriteLine("WIP");
+            throw new NotImplementedException();
         }
     }
 }
