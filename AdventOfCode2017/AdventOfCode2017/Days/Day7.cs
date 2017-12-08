@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace AdventOfCode2017.Days
 {
@@ -1195,18 +1196,148 @@ jptl (61)
 ugml (68) -> gyxo, ebii, jptl
 gyxo (61)
 cntj (57)";
+        
+        private static string _sample2 =
+@"aaa (10)
+aab (10)
+aac (10)
+aba (10) -> aaa, aab, aac
+aad (10)
+aae (9)
+aaf (10)
+abb (10) -> aad, aae, aaf
+aag (10)
+aah (10)
+aai (10)
+abc (10) -> aag, aah, aai
+baa (10) -> aba, abb, abc";
 
         public void Part1()
         {
             Console.WriteLine("Recursive Circus P.1");
 
-            IEnumerable<string> linesThatMatter = _sample.Split('\n').Where(l => l.Contains("->"));
+            var leger = GetLeger(_input).ToList();
+            var programsWithChildren = leger.Where(l => l.Children.Any());
+            string bottomProgram = GetBottomProgramName(
+                programsWithChildren,
+                new List<string> { programsWithChildren.First().Name },
+                new List<string>()
+            );
 
+            Console.WriteLine($"Bottom Program: {bottomProgram}");
         }
 
         public void Part2()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Recursive Circus P.2");
+
+            var leger = GetLeger(_input).ToList();
+            var programsWithChildren = leger.Where(l => l.Children.Any());
+            string bottomProgram = GetBottomProgramName(
+                programsWithChildren,
+                new List<string> { programsWithChildren.First().Name },
+                new List<string>()
+            );
+
+            IDictionary<string, int> towers = leger.First(l => l.Name == bottomProgram).Children
+                .ToDictionary(
+                    child => child,
+                    child => GetTowerTotalWeight(leger, child)
+                );
+
+            var wrongTower = towers.Single(t => towers.Count(s => t.Value == s.Value) == 1);
+            int rightWeight = towers.First(t => t.Key != wrongTower.Key).Value;
+            int correctionAmount = rightWeight - wrongTower.Value;
+            
+            // Scan tower for wrong node and correct with correctionAmount
+            var wrongProgram = FindWrongProgram(leger, wrongTower.Key);
+
+            Console.WriteLine($"Node {wrongProgram.Name} is {wrongProgram.Weight} but should be {wrongProgram.Weight + correctionAmount}");
         }
+        
+        private static IEnumerable<Program> GetLeger(string input)
+        {
+            var programRegex = new Regex("^[a-zA-Z]+");
+            var weightRegex = new Regex("[0-9]+");
+            var childrenRegex = new Regex(@"([a-zA-Z]+(,)*\s*)+$");
+            
+            return input.Split('\n').Select(line => new Program
+            {
+                Name = programRegex.Match(line).Value,
+                Weight = int.Parse(weightRegex.Match(line).Value),
+                Children = childrenRegex.IsMatch(line) ?
+                    childrenRegex.Match(line).Value.Split(',').Select(c => c.Trim()).ToArray()
+                    : Array.Empty<string>()
+            });
+        }
+        
+        private static string GetBottomProgramName(IEnumerable<Program> leger, List<string> whitelist, List<string> blacklist, int index = 1)
+        {
+            var program = leger.ElementAt(index);
+            
+            blacklist.AddRange(program.Children);
+
+            if (!whitelist.Contains(program.Name))
+                whitelist.Add(program.Name);
+
+            whitelist.RemoveAll(p => blacklist.Any(c => c == p));
+
+            // ++index increments
+            return ++index == leger.Count() ?
+                whitelist.Single()
+                : GetBottomProgramName(leger, whitelist, blacklist, index);
+        }
+
+        private static Program FindWrongProgram(IEnumerable<Program> leger, string tower)
+        {
+            var program = leger.First(l => l.Name == tower);
+
+            // Tower is balanced, culprit is this tower
+            if (IsTowerBalanced(leger, tower))
+                return program;
+
+            // Tower is not balanced, chck for children's children as a culprit
+            foreach (string child in program.Children)
+            {
+                if (!IsTowerBalanced(leger, child))
+                    return FindWrongProgram(leger, child);
+            }
+            
+            // Culprit is a child
+            var children = leger.Where(l => program.Children.Contains(l.Name)).ToList();
+            return children.Single(c => children.Count(b => GetTowerTotalWeight(leger, b.Name) == GetTowerTotalWeight(leger, c.Name)) <= 1);
+        }
+        
+        private static int GetTowerTotalWeight(IEnumerable<Program> leger, string tower)
+        {
+            var program = leger.First(l => l.Name == tower);
+
+            return program.Children.Aggregate(
+                program.Weight,
+                (totalWeight, child) =>
+                    totalWeight + GetTowerTotalWeight(leger, child)
+            );
+        }
+        
+        private static bool IsTowerBalanced(IEnumerable<Program> leger, string tower)
+        {
+            var program = leger.First(l => l.Name == tower);
+
+            if (!program.Children.Any())
+                return true;
+
+            IEnumerable<int> weights = program.Children.Select(c => GetTowerTotalWeight(leger, c)).ToList();
+            return weights.Sum() == weights.First() * weights.Count();
+        }
+    }
+    
+    class Program
+    {
+        public string Name { get; set; }
+        public int Weight { get; set; }
+        public IEnumerable<string> Children { get; set; }
+
+        public override string ToString() =>
+            $"{Name} ({Weight}) -> {string.Join(", ", Children)}";
     }
 }
