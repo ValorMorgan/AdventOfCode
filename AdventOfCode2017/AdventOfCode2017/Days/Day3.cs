@@ -50,14 +50,77 @@ namespace AdventOfCode2017.Days
         /*
          * 147 142 133 122 059
          * 304 005 004 002 057
-    PORT * 330 010 001 001 054
+    PORT * 330 010   1 001 054
          * 351 011 023 025 026
          * 362 747 806 880 932 -> ..
          */
 
         public void Part2()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Spiral Memory P.2");
+
+            int size = 1000;
+            
+            int[,] grid = new int[size, size];
+            var position = (
+                X: size / 2,
+                Y: size / 2
+            );
+
+            // Initialize the 1 at port
+            grid[position.X, position.Y] = 1;
+
+            int input = int.Parse(_input);
+            while (grid[position.X, position.Y] <= input)
+            {
+                MoveForward(grid, ref position);
+                grid[position.X, position.Y] = GetCellValue(grid, position);
+            }
+
+            Console.WriteLine($"First larger number: {grid[position.X, position.Y]}");
         }
+
+        private void MoveForward(int[,] grid, ref ( int X, int Y ) position)
+        {
+            // Look around
+            bool right = grid[position.X + 1, position.Y] == 0;
+            bool up = grid[position.X, position.Y - 1] == 0;
+            bool left = grid[position.X - 1, position.Y] == 0;
+            bool down = grid[position.X, position.Y + 1] == 0;
+
+            // Surrounded by 0's
+            if (right && up && left && down)
+                position.X += 1;
+            
+            // On right vertical line
+            else if (!left && up)
+                position.Y -= 1;
+            
+            // On top horizontal line
+            else if (!down && left)
+                position.X -= 1;
+            
+            // On left vertical line
+            else if (!right && down)
+                position.Y += 1;
+            
+            // On bottom horizontal line
+            else if (!up && right)
+                position.X += 1;
+
+            // Failed to move
+            else
+                throw new ApplicationException($"Failed to move out of [{position.X}, {position.Y}]");
+        }
+
+        private int GetCellValue(int[,] grid, (int X, int Y) position) =>
+            grid[position.X + 1, position.Y] +
+            grid[position.X - 1, position.Y] +
+            grid[position.X, position.Y + 1] +
+            grid[position.X, position.Y - 1] +
+            grid[position.X + 1, position.Y + 1] +
+            grid[position.X - 1, position.Y + 1] +
+            grid[position.X - 1, position.Y - 1] +
+            grid[position.X + 1, position.Y - 1];
     }
 }
