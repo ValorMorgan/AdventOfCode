@@ -1329,15 +1329,17 @@ baa (10) -> aba, abb, abc";
             IEnumerable<int> weights = program.Children.Select(c => GetTowerTotalWeight(leger, c)).ToList();
             return weights.Sum() == weights.First() * weights.Count();
         }
-    }
-    
-    class Program
-    {
-        public string Name { get; set; }
-        public int Weight { get; set; }
-        public IEnumerable<string> Children { get; set; }
 
-        public override string ToString() =>
-            $"{Name} ({Weight}) -> {string.Join(", ", Children)}";
+        private class Program
+        {
+            public string Name { get; set; }
+
+            public int Weight { get; set; }
+
+            public IEnumerable<string> Children { get; set; }
+
+            public override string ToString() =>
+                $"{Name} ({Weight}) -> {string.Join(", ", Children)}";
+        }
     }
 }
