@@ -48,6 +48,9 @@ namespace AdventOfCode2017
                         case "10":
                             DeterminePart(new Day10());
                             break;
+                        case "11":
+                            DeterminePart(new Day11());
+                            break;
                         case "exit":
                             return;
                         default:
