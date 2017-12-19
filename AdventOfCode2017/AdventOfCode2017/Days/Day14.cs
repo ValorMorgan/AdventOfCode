@@ -23,30 +23,31 @@ namespace AdventOfCode2017.Days
 
             Console.WriteLine($"Used blocks: {usedBlocks}");
         }
-
         
-
         public void Part2()
         {
             Console.WriteLine("Disk Defragmentation P.2");
             int regions = 0;
 
-            var grid = GenerateGrid(_sample);
+            var grid = GenerateGrid(_input);
             
-            for (int i = 0; i < grid.Length; i++)
+            for (int row = 0; row < grid.Length; row++)
             {
-                for (int j = 0; j < grid[i].Length; j++)
+                for (int column = 0; column < grid[row].Length; column++)
                 {
-                    if (grid[i][j] != 1)
+                    if (grid[row][column] != 1)
                         continue;
+
+                    // Found a region
+                    regions += 1;
                     
-                    
+                    ClearRegion(ref grid,   row, column);
                 }
             }
 
             Console.WriteLine($"Total regions: {regions}");
         }
-        
+
         private int[][] GenerateGrid(string input)
         {
             int[][] grid = new int[128][];
@@ -59,6 +60,32 @@ namespace AdventOfCode2017.Days
             }
 
             return grid;
+        }
+
+        private void ClearRegion(ref int[][] grid, int row, int column)
+        {
+            // Find left-most 1 in region's row
+            while (column > 0 && grid[row][column-1] == 1)
+            {
+                column -= 1;
+            }
+            
+            // Scan right
+            while (row < grid.Length && column < grid[row].Length && grid[row][column] == 1)
+            {
+                grid[row][column] = 0;
+
+                // Check down
+                if (row + 1 < grid.Length && grid[row + 1][column] == 1)
+                    ClearRegion(ref grid, row + 1, column);
+
+                // Check up
+                if (row - 1 >= 0 && grid[row - 1][column] == 1)
+                    ClearRegion(ref grid, row - 1, column);
+                
+                // Move right
+                column += 1;
+            }
         }
 
         private IEnumerable<string> GenerateKnotHash(string input)
