@@ -37,6 +37,16 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Day16Tests.cs" />
+    <Compile Include="Day17Tests.cs" />
+    <Compile Include="Day18Tests.cs" />
+    <Compile Include="Day19Tests.cs" />
+    <Compile Include="Day21Tests.cs" />
+    <Compile Include="Day22Tests.cs" />
+    <Compile Include="Day23Tests.cs" />
+    <Compile Include="Day24Tests.cs" />
+    <Compile Include="Day25Tests.cs" />
+    <Compile Include="Day20Tests.cs" />
     <Compile Include="Day15Tests.cs" />
     <Compile Include="Day14Tests.cs" />
     <Compile Include="Day13Tests.cs" />

@@ -63,6 +63,36 @@ namespace AdventOfCode2017
                         case "15":
                             DeterminePart(new Day15());
                             break;
+                        case "16":
+                            DeterminePart(new Day16());
+                            break;
+                        case "17":
+                            DeterminePart(new Day17());
+                            break;
+                        case "18":
+                            DeterminePart(new Day18());
+                            break;
+                        case "19":
+                            DeterminePart(new Day19());
+                            break;
+                        case "20":
+                            DeterminePart(new Day20());
+                            break;
+                        case "21":
+                            DeterminePart(new Day21());
+                            break;
+                        case "22":
+                            DeterminePart(new Day22());
+                            break;
+                        case "23":
+                            DeterminePart(new Day23());
+                            break;
+                        case "24":
+                            DeterminePart(new Day24());
+                            break;
+                        case "25":
+                            DeterminePart(new Day25());
+                            break;
                         case "exit":
                             return;
                         default:
